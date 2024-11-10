@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Card from './card';
+import Card from './Card';
 import useUnregisterMeal from '../hooks/useUnregisterMeal';
 import { useAuthContext } from '../context/AuthContext';
 import useUserMeals from '../hooks/useUserMeals';
@@ -15,7 +15,7 @@ const Mealplan = () => {
     dinner:true,
   });
 
-  const { userMeals } = useUserMeals(); // Ensure userMeals is async function returning data
+  const { userMeals } = useUserMeals();
 
   useEffect(() => {
     const fetchUserMeals = async () => {
@@ -70,10 +70,10 @@ const Mealplan = () => {
   };
 const liClass = "p-2"
   return (
-    <div className="flex flex-col items-center">
-      <h1 className="text-4xl font-bold my-6">Meal Planner</h1>
+    <div className="flex flex-col items-center p-6 bg-gradient-to-b from-blue-100 via-white to-blue-50">
+      <h1 className="text-4xl font-semibold mb-6 text-gray-800">Meal Planner</h1>
       {Object.keys(mealDescriptions).length > 0 ? (
-        <form onSubmit={handleSubmit} className="flex flex-col items-center">
+        <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {Object.keys(mealDescriptions).map((mealType) => (
               <Card
@@ -85,13 +85,16 @@ const liClass = "p-2"
               />
             ))}
           </div>
-          <button type="submit" className="mt-8 btn btn-primary text-lg">
-            {loading ? <span className='loading loading-spinner'></span> : "Submit"}
+          <button
+            type="submit"
+            className="mt-8 btn btn-primary text-lg w-full md:w-auto mx-auto hover:bg-blue-600 transition-colors"
+          >
+            {loading ? <span className="loading loading-spinner"></span> : "Submit"}
           </button>
         </form>
        
       ) : (
-        <p>Loading meal descriptions...</p>
+        <p className="text-lg text-gray-500">Loading meal descriptions...</p>
       )}
 
       <ul className='font-light font-sans text-start text-red-900'>
