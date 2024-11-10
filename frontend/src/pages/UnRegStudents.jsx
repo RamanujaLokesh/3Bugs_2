@@ -3,6 +3,8 @@ import useUnRegStudents from '../hooks/useUnRegStudents';
 import { useAuthContext } from '../context/AuthContext';
 import UnregCard from '../components/UnregCard';
 import SelectHostel from '../components/SelectHostel';
+import Navbar from '../components/navbar';
+import Footer from '../components/footer';
 
 const UnRegStudents = () => {
   const { loading, unRegStudents } = useUnRegStudents();
@@ -77,7 +79,8 @@ const UnRegStudents = () => {
   };
 
   return (
-    <>
+    <div>
+      
       {authUser.auth_level === 3 && (
         <SelectHostel onSelectHostel={handleHostelChange}/>
       )}
@@ -100,7 +103,8 @@ const UnRegStudents = () => {
           )}
         </div>
       )}
-    </>
+      
+    </div>
   );
 };
 

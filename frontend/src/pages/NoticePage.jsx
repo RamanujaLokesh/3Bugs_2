@@ -6,9 +6,7 @@ function NoticePage() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       
-      <header className="bg-white shadow">
-        <Navbar />
-      </header>
+      
 
      
       <main className="flex-grow">
@@ -18,9 +16,7 @@ function NoticePage() {
       </main>
 
       
-      <footer className="bg-gray-800 text-white">
-        <Footer />
-      </footer>
+      
     </div>
   );
 }

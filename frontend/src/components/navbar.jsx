@@ -23,7 +23,16 @@ const Navbar = () => {
           <Link to="/" className="hover:text-gray-200">Home</Link>
           <Link to="/notice" className="hover:text-gray-200">Notice</Link>
           <Link to="/messmenu" className="hover:text-gray-200">Mess-Menu</Link>
-          <Link to="/chat" className="hover:text-gray-200">Chat</Link>
+          <Link to="/chat" className="hover:text-gray-200">Conference</Link>
+          {authUser.auth_level>1&&
+          <Link to="/unregstudents" className="hover:text-gray-200">Unregistered Students</Link>
+          }
+          {authUser.auth_level ===1 &&
+          <Link to='/complaint' >Complaint</Link>
+          }
+           {authUser.auth_level >1 &&
+          <Link to='/complaints' >Complaints</Link>
+          }
         </div>
 
         <div className="relative">
@@ -81,7 +90,16 @@ const Navbar = () => {
             <Link to="/" className="hover:text-gray-200">Home</Link>
             <Link to="/notice" className="hover:text-gray-200">Notice</Link>
             <Link to="/messmenu" className="hover:text-gray-200">Mess-Menu</Link>
-            <Link to="/chat" className="hover:text-gray-200">Chat</Link>
+            <Link to="/chat" className="hover:text-gray-200">Conference</Link>
+            {authUser.auth_level>1&&
+          <Link to="/unregstudents" className="hover:text-gray-200">Unregistered Students</Link>
+          }
+           {authUser.auth_level ===1 &&
+          <Link to='/complaint' >Complaint</Link>
+          }
+           {authUser.auth_level >1 &&
+          <Link to='/complaints' >Complaints</Link>
+          }
           </div>
         </div>
       )}

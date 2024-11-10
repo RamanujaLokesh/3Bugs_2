@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import useForgetPassword from '../hooks/useForgetPassword.js';
+import { Link } from 'react-router-dom';
 
 const ForgetPassword = () => {
   const [regNo, setRegNo] = useState('');
@@ -38,7 +39,7 @@ const ForgetPassword = () => {
             />
           </div>
 
-          {/* Submit Button */}
+        <Link to='/login' className='hover:to-blue-700'>Login</Link>
           <button
             type="submit"
             className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
