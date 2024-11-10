@@ -5,26 +5,49 @@ const NoticeBoard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchNotices = async () => {
-      try {
-        const response = await fetch('./api/data/notice');
-        if (!response.ok) throw new Error('Failed to fetch notices');
+  const fetchNotices = async () => {
+    try {
+      const response = await fetch('/api/data/notice');
+      if (!response.ok) throw new Error('Failed to fetch notices');
 
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
         const data = await response.json();
         setNotices(data);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
+      } else {
+        throw new Error("Invalid response format");
       }
-    };
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchNotices();
   }, []);
 
+  const handleDownload = (pdfUrl, filename) => {
+    fetch(pdfUrl)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename); 
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      })
+      .catch((error) => {
+        console.error('Error downloading file:', error);
+      });
+  };
+  
+
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
-  if (error) return <p className="text-center text-red-500">Failed to load notices</p>;
+  if (error) return <p className="text-center text-red-500">Failed to load notices: {error}</p>;
 
   return (
     <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
@@ -48,13 +71,12 @@ const NoticeBoard = () => {
                   </div>
                   <h2 className="text-lg font-medium text-gray-900">{notice.title}</h2>
                 </div>
-                <a
-                  href={notice.pdf_document}
+                <button
+                  onClick={() => handleDownload(notice.pdf_document, notice.title + '.pdf')}
                   className="mt-2 sm:mt-0 text-blue-600 hover:text-blue-800 hover:underline text-sm font-semibold"
-                  download
                 >
                   Download PDF
-                </a>
+                </button>
               </div>
             );
           })
