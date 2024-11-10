@@ -62,3 +62,34 @@ export const getNotices = async (req, res) => {
   };
 
 
+  export const getUnRegStudents = async (req, res) => {
+    // Get the current date and time
+    const now = new Date();
+  
+    // Add 4 hours to the current time
+    now.setHours(now.getHours() + 5);
+  
+    // Format the date as needed for the query, e.g., 'YYYY-MM-DD' for SQL
+    const formattedDate = now.toISOString().split('T')[0];
+  
+    console.log(formattedDate);
+  
+    try {
+      let result = await pool.query(
+        `SELECT * FROM unregistered_meals 
+         WHERE reg_no IN (SELECT reg_no FROM hostel_details WHERE hostel_name = $2)
+         AND date = $1 AND (breakfast = false OR lunch = false OR snacks = false OR dinner = false)`,
+        [formattedDate, req.params.hostel]
+      );
+  
+      if (result.rowCount === 0) {
+        return res.status(400).json({ error: "No data found" });
+      }
+  
+      return res.status(201).json(result.rows);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Failed to fetch notices" });
+    }
+  };
+  

@@ -52,3 +52,20 @@ export const sendMessage = async (req, res) => {
         return res.status(500)
     }
 }
+
+export const deleteMsg = async(req,res)=>{
+const { id } = req.params;
+  
+  try {
+    const result = await pool.query('DELETE FROM messages WHERE unique_id = $1', [id]);
+    
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Message not found' });
+    }
+    
+    return res.status(200).json({ message: 'Message deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Failed to delete message'});
+  }
+}

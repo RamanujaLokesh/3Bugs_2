@@ -9,10 +9,10 @@ const Mealplan = () => {
   const [mealDescriptions, setMealDescriptions] = useState({});
   const { loading, unregisterMeal } = useUnregisterMeal();
   const [selectedMeals, setSelectedMeals] = useState({
-    breakfast: false,
-    lunch: false,
-    snacks: false,
-    dinner: false,
+    breakfast: true,
+    lunch: true,
+    snacks:true,
+    dinner:true,
   });
 
   const { userMeals } = useUserMeals(); // Ensure userMeals is async function returning data
@@ -68,7 +68,7 @@ const Mealplan = () => {
     e.preventDefault();
     unregisterMeal({ reg_no: authUser.reg_no, ...selectedMeals });
   };
-
+const liClass = "p-2"
   return (
     <div className="flex flex-col items-center">
       <h1 className="text-4xl font-bold my-6">Meal Planner</h1>
@@ -89,9 +89,28 @@ const Mealplan = () => {
             {loading ? <span className='loading loading-spinner'></span> : "Submit"}
           </button>
         </form>
+       
       ) : (
         <p>Loading meal descriptions...</p>
       )}
+
+      <ul className='font-light font-sans text-start text-red-900'>
+        <li className={liClass}>
+        By default, all meal preferences are set to {`"Yes,"`} indicating that you wish to have all four meals {'(Breakfast, Lunch, Snack, Dinner)'} tomorrow. 
+        </li>
+        <li className={liClass}>
+        If you do not want any specific meal, please change the option to {`"No"`} for that particular meal by clicking on it.
+        </li>
+        <li className={liClass}>
+        Make sure to review your selections before submitting the form to avoid any mistakes.
+        </li>
+        <li className={liClass}>
+        Submitting this form accurately helps us plan and reduce food waste.
+        </li>
+        <li className={liClass}>
+         If in case you are not having meal for long no. of. days please consult respective authority.
+        </li>
+      </ul>
     </div>
   );
 };

@@ -27,9 +27,13 @@ export const loginUser = async (req , res)=>{
             return res.status(404).json({error:"user not found"});
         }
         hostel = hostel.rows[0]
-        let obj = {reg_no:user.reg_no , name:user.name, clg_mail:user.clg_mail,ph_number:user.ph_number,gender:user.gender , hostel:hostel.hostel_name, room_no:hostel.room_no}
+        let auth_level = 1;
+if(reg_no[0]==='A')auth_level = 3;
+else if(reg_no[0]==='B')auth_level = 2;
+        let obj = {reg_no:user.reg_no , name:user.name, clg_mail:user.clg_mail,ph_number:user.ph_number,gender:user.gender , hostel:hostel.hostel_name, room_no:hostel.room_no,auth_level}
            generateTokenAndSetCookie(obj , res);
-        
+
+
             res.status(201).json({
             reg_no: user.reg_no,
             name:user.name,
@@ -37,7 +41,8 @@ export const loginUser = async (req , res)=>{
             phone_no:user.ph_number,
             gender: user.gender,
             hostel:hostel.hostel_name,
-            room_no:hostel.room_no
+            room_no:hostel.room_no,
+            auth_level
             })
         }
         

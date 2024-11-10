@@ -1,9 +1,11 @@
+// SendMessage.jsx
+
 import React, { useState } from 'react';
 import { socket } from '../../socket';
 import { useAuthContext } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 
-const SendMessage = () => {
+const SendMessage = ({ addMessage }) => {
   const [value, setValue] = useState('');
   const [loading, setLoading] = useState(false);
   const { authUser } = useAuthContext();
@@ -27,8 +29,10 @@ const SendMessage = () => {
     }, (acknowledgment) => {
       setLoading(false);
       if (acknowledgment.status === 'ok') {
-        toast.success('Message sent successfully!');
+        // Call addMessage to update the messages in ConferenceRoom
+        addMessage(acknowledgment.message);
         setValue('');
+        toast.success('Message sent successfully!');
       } else {
         toast.error('Failed to send message.');
       }
@@ -36,15 +40,16 @@ const SendMessage = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className='flex flex-row'>
       <input
         type="text"
         value={value}
         onChange={e => setValue(e.target.value)}
         placeholder="Type your message"
         disabled={loading}
+        className='w-4/5 text-center'
       />
-      <button type='submit' disabled={loading}>
+      <button type='submit' disabled={loading} className='w-1/5 btn-primary btn'>
         {loading ? 'Sending...' : 'Send'}
       </button>
     </form>

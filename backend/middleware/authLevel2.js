@@ -1,8 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-
-
-const protectRoute = async (req, res, next) => {
+const authLevel2 = () => {
     try {
 
 
@@ -19,14 +17,16 @@ const protectRoute = async (req, res, next) => {
         }
 
         const { iat, exp, ...filteredUser } = decoded;
-        req.user = filteredUser;
-
-        next();
+        if(filteredUser.auth_level >=2){
+            req.user = filteredUser;
+            next();
+        }else{
+            return res.status(401).json({ error: "Unauthorized - wrong token" })
+        }
     } catch (error) {
         console.log("error in protectRoute middleware: ", error.message)
         res.status(500).json({ error: "internal server error" });
     }
-
 }
 
-export default protectRoute;
+export default authLevel2

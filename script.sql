@@ -212,3 +212,6 @@ CREATE TABLE contact_details (
     warden_mail VARCHAR(255),
     chief_warden_mail VARCHAR(255)
 );
+
+
+ALTER TYPE hostel_name_type ADD VALUE 'All';
