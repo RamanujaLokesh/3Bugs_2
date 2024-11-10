@@ -13,6 +13,7 @@ import Menu from './pages/menu/Menu.jsx';
 import ConferenceRoom from './pages/ConferenceRoom.jsx';
 import UnRegStudents from './pages/UnRegStudents.jsx';
 import Page404 from './pages/Page404.jsx';
+import ComplaintsPage from './pages/ComplaintPage.jsx';
 
 function App() {
   const { authUser } = useAuthContext();
@@ -27,7 +28,8 @@ function App() {
       <Route path='/notice' element={!authUser?<Navigate to='/login' />:<NoticePage />} />
       <Route path='/messmenu' element={!authUser?<Navigate to='/login' />:<Menu />} />
       <Route path='/chat' element={!authUser?<Navigate to='/login' />:<ConferenceRoom />} />
-      <Route path='/unregstudents' element={authUser.auth_level > 1 ?<UnRegStudents/> : <Page404 />} />
+      <Route path='/unregstudents' element={authUser?.auth_level > 1 ?<UnRegStudents/> : <Page404 />} />
+      <Route path='/complaints' element={!authUser?<Login/>:<ComplaintsPage />} />
       <Route path='/resetpassword/:token' element={<ResetPassword />} />
       <Route path='*' element={<Page404 />} />
       </Routes>

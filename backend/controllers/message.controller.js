@@ -5,12 +5,12 @@ import pool from "../dbConfig.js";
 export const getMessages = async (req, res) => {
     try {
         const hostel = req.params.hostel;
-        console.log(hostel , req.user)
-        if (hostel !== req.user.hostel) {
+        console.log(hostel)
+        if (req.user.hostel !== 'All' && hostel !== req.user.hostel) {
             return res.status(403).json({ error: "not authorized to get messages of this hostel !" })
         }
 
-        let messages = await pool.query(`select * from messages where hostel_name = $1 order by timestamp desc limit 20`, [hostel]);
+        let messages = await pool.query(`select * from messages where hostel_name = $1 order by timestamp asc limit 20`, [hostel]);
         if (messages.rowCount === 0) {
             return res.status(204).json([]);
         }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import useUnRegStudents from '../hooks/useUnRegStudents';
 import { useAuthContext } from '../context/AuthContext';
 import UnregCard from '../components/UnregCard';
+import SelectHostel from '../components/SelectHostel';
 
 const UnRegStudents = () => {
   const { loading, unRegStudents } = useUnRegStudents();
@@ -71,21 +72,14 @@ const UnRegStudents = () => {
     }
   }, [selectedHostel, authUser.auth_level]);
 
-  const handleHostelChange = (event) => {
-    setSelectedHostel(event.target.value);
+  const handleHostelChange = (hostel) => {
+    setSelectedHostel(hostel);
   };
 
   return (
     <>
       {authUser.auth_level === 3 && (
-        <select onChange={handleHostelChange} value={selectedHostel}>
-          <option value="" disabled>Select Hostel</option>
-          <option value="Malviya">Hostel1</option>
-          <option value="Tandon">Hostel2</option>
-          <option value="SVBH">Hostel3</option>
-          <option value="NBH">Hostel3</option>
-          <option value="KNGH">Hostel3</option>
-        </select>
+        <SelectHostel onSelectHostel={handleHostelChange}/>
       )}
 
       {loading ? (

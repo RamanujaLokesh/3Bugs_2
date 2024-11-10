@@ -1,7 +1,8 @@
+// socket.js
+
 import pool from '../dbConfig.js';
 import { Server } from 'socket.io';
 
-// Function to initialize Socket.IO
 function setupSocket(server) {
   const io = new Server(server, {
     cors: {
@@ -18,7 +19,6 @@ function setupSocket(server) {
       console.log(`User joined in ${hostel}`);
     });
 
-    // Handle chat messages
     socket.on('sendMessage', async (msgData, callback) => {
       const { text, hostel_name, sender_regno, timestamp } = msgData;
       try {
@@ -27,20 +27,26 @@ function setupSocket(server) {
           [hostel_name, text, sender_regno, timestamp]
         );
         const newMessage = { ...msgData, unique_id: result.rows[0].unique_id };
+
+        // Broadcast message to other users in the room
+        socket.broadcast.to(hostel_name).emit('receiveMessage', newMessage);
         
-        io.to(hostel_name).emit('receiveMessage', newMessage);
+        // Send acknowledgment only to the sender
         callback({ status: 'ok', message: newMessage });
       } catch (error) {
         console.error('Error sending message:', error);
         callback({ status: 'error' });
       }
     });
-    
-    socket.on('deleteMessage', async (messageId) => {
-      await pool.query(`DELETE FROM messages WHERE unique_id = $1`, [messageId]);
-      io.to(hostel).emit('messageDeleted', messageId);
+
+    socket.on('deleteMessage', async (messageId, hostel_name) => {
+      try {
+        await pool.query(`DELETE FROM messages WHERE unique_id = $1`, [messageId]);
+        io.to(hostel_name).emit('messageDeleted', messageId);
+      } catch (error) {
+        console.error('Error deleting message:', error);
+      }
     });
-    
 
     socket.on('disconnect', () => {
       console.log('User disconnected:', socket.id);

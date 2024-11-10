@@ -28,7 +28,7 @@ const SendMessage = ({ addMessage }) => {
       timestamp: new Date().toISOString()
     }, (acknowledgment) => {
       setLoading(false);
-      if (acknowledgment.status === 'ok') {
+      if (acknowledgment.status === 'ok' && acknowledgment.message?.unique_id) {
         // Call addMessage to update the messages in ConferenceRoom
         addMessage(acknowledgment.message);
         setValue('');

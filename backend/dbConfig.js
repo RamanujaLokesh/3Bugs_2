@@ -8,9 +8,9 @@ import pg from 'pg';
 const pool = new pg.Client({
     user:"postgres",
     host:"localhost",
-    database:"users",
-    password:"likhith",
-    port:5432
+    database:"mess",
+    password:"ramanuja",
+    port:5433
     
 });
 

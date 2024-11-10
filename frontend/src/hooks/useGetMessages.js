@@ -5,12 +5,10 @@ import { useAuthContext } from '../context/AuthContext.jsx';
 
 const useGetMessages = () => {
     const [loading, setLoading] = useState(false);
-    const { authUser } = useAuthContext();
-    console.log(authUser)
-    const getMessages = async () => {
+    const getMessages = async (hostel) => {
         setLoading(true);
         try {
-            const res = await fetch(`/api/message/${authUser.hostel}`)
+            const res = await fetch(`/api/message/${hostel}`)
             const data = await res.json();
             console.log(data);
             if (data.error) throw new Error(data.error);
