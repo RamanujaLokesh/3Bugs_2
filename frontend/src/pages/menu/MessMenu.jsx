@@ -21,32 +21,36 @@ const MessMenu = () => {
   }, []);
 
   if (!mealData.length) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-lg font-semibold">Loading...</div>
+      </div>
+    );
   }
 
   return (
-    <div className='h-screen'>
+    <div className='h-full'>
       <div>
-        <h1 className='flex items-center justify-center text-3xl font-bold pt-4 pb-4'>Mess Menu</h1>
+        <h1 className='flex items-center justify-center text-3xl text-gray-900 font-bold pt-4 pb-4'>Mess Menu</h1>
       </div>
-      <div className='flex justify-center'>
-        <table className='table-auto'>
+      <div className='overflow-x-auto'>
+        <table className='table-auto w-full'>
           <thead>
             <tr>
-              <th className='p-2'>Day</th>
+              <th className='p-2 text-gray-800 text-left'>Day</th>
               {mealDay.map((meal, index) => (
-                <th key={index} className='p-2'>{meal}</th>
+                <th key={index} className='p-2 text-left text-gray-700'>{meal}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {mealData.map((dayMeals, dayIndex) => (
-              <tr key={dayIndex}>
-                <td className='p-2'>{dayMeals.day}</td>
-                <td className='p-2'><MessCard presentMeal={dayMeals.breakfast} /></td>
-                <td className='p-2'><MessCard presentMeal={dayMeals.lunch} /></td>
-                <td className='p-2'><MessCard presentMeal={dayMeals.snacks} /></td>
-                <td className='p-2'><MessCard presentMeal={dayMeals.dinner} /></td>
+              <tr key={dayIndex} className={`${dayIndex % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}>
+                <td className='p-2 text-gray-700'>{dayMeals.day}</td>
+                <td className='p-2 text-center'><MessCard presentMeal={dayMeals.breakfast} /></td>
+                <td className='p-2 text-center'><MessCard presentMeal={dayMeals.lunch} /></td>
+                <td className='p-2 text-center'><MessCard presentMeal={dayMeals.snacks} /></td>
+                <td className='p-2 text-center'><MessCard presentMeal={dayMeals.dinner} /></td>
               </tr>
             ))}
           </tbody>

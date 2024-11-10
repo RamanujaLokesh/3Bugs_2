@@ -50,21 +50,42 @@ const ConferenceRoom = () => {
   }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center">
-      {loading ? (
-        <span className="loading loading-spinner"></span>
-      ) : messages.length > 0 ? (
-        messages.map((message) => (
-          <Message key={message.unique_id} message={message} />
-        ))
-      ) : (
-        <p>No messages found.</p>
-      )}
-      {isConnected ? (
-        <SendMessage />
-      ) : (
-        <div>Connection error</div>
-      )}
+    <div className="flex flex-col items-center justify-between h-screen bg-gray-50 text-gray-800">
+      {/* Header */}
+      <div className="w-full bg-blue-500 text-white py-4 text-center shadow-md">
+        <h1 className="text-xl font-semibold">Conference Room</h1>
+        <p className="text-sm">
+          {isConnected ? "Connected to the room" : "Not connected"}
+        </p>
+      </div>
+
+      {/* Messages Section */}
+      <div className="flex-1 w-full max-w-2xl overflow-y-auto p-4 space-y-4 bg-slate-400 shadow-md rounded-lg">
+        {loading ? (
+          <div className="flex justify-center items-center h-full">
+            <span className="loading loading-spinner"></span>
+          </div>
+        ) : messages.length > 0 ? (
+          messages.map((message) => (
+            <Message key={message.unique_id} message={message} />
+          ))
+        ) : (
+          <div className="text-center text-gray-500">
+            <p>No messages found.</p>
+          </div>
+        )}
+      </div>
+
+      {/* Input Section */}
+      <div className="w-full max-w-2xl px-4 py-4 bg-gray-100 border-t shadow-md">
+        {isConnected ? (
+          <SendMessage />
+        ) : (
+          <div className="text-center text-red-500">
+            <p>Connection error. Please check your internet connection.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

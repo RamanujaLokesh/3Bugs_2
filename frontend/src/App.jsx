@@ -11,6 +11,7 @@ import ResetPassword from './pages/ResetPassword.jsx';
 import NoticePage from './pages/NoticePage.jsx';
 import Menu from './pages/menu/Menu.jsx';
 import ChatRoom from './pages/ConferenceRoom.jsx';
+import ComplaintsPage from './pages/complaint.jsx';
 
 function App() {
   const { authUser } = useAuthContext();
@@ -24,6 +25,7 @@ function App() {
       <Route path="/forgetpassword" element={authUser? <Navigate to='/' />:<ForgetPassword />} />
       <Route path='/notice' element={!authUser?<Navigate to='/login' />:<NoticePage />} />
       <Route path='/messmenu' element={!authUser?<Navigate to='/login' />:<Menu />} />
+      <Route path = '/complaints' element={!authUser?<Navigate to = '/login' />:<ComplaintsPage />} />
     
        
       <Route path='/resetpassword/:token' element={<ResetPassword />} />

@@ -10,6 +10,7 @@ import pool from '../dbConfig.js'
 import authRouter from '../router/auth.routes.js'
 import dataRouter from '../router/data.router.js'
 import userRouter from '../router/user.router.js'
+import complaintRoutes from '../router/complaint.router.js';
 import messageRouter from '../router/message.router.js'
 
 import setupSocket from './socket.js'
@@ -34,6 +35,7 @@ app.use("/api/auth" , authRouter);
 app.use("/api/data" , dataRouter )
 app.use('/api/user',userRouter);
 app.use('/api/message', messageRouter);
+app.use('/api/complaints', complaintRoutes);
 
 app.get('/' , async(req,res)=>{
     const result = await pool.query("SELECT * FROM student_details ;");
