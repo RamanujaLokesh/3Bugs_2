@@ -213,5 +213,12 @@ CREATE TABLE contact_details (
     chief_warden_mail VARCHAR(255)
 );
 
+CREATE TABLE stored_complaints (
+    complaint_id SERIAL PRIMARY KEY,
+    reg_no VARCHAR REFERENCES student_details(reg_no),
+    hostel_name hostel_name_type, 
+    complaint TEXT,
+    time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 ALTER TYPE hostel_name_type ADD VALUE 'All';

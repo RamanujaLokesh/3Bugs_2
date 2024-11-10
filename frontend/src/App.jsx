@@ -15,6 +15,8 @@ import UnRegStudents from './pages/UnRegStudents.jsx';
 import Page404 from './pages/Page404.jsx';
 import ComplaintsPage from './pages/ComplaintPage.jsx';
 
+import NoticeUpload from './pages/NoticeUpload.jsx';
+
 function App() {
   const { authUser } = useAuthContext();
 
@@ -28,9 +30,11 @@ function App() {
       <Route path='/notice' element={!authUser?<Navigate to='/login' />:<NoticePage />} />
       <Route path='/messmenu' element={!authUser?<Navigate to='/login' />:<Menu />} />
       <Route path='/chat' element={!authUser?<Navigate to='/login' />:<ConferenceRoom />} />
-      <Route path='/unregstudents' element={authUser?.auth_level > 1 ?<UnRegStudents/> : <Page404 />} />
-      <Route path='/complaints' element={!authUser?<Login/>:<ComplaintsPage />} />
+      <Route path='/unregstudents' element={authUser??.auth_level > 1 ?<UnRegStudents/> : <Page404 />} />
+      
+      <Route path='/complaints' element={!authUser?<Navigate to='/login' />:<ComplaintsPage/>} />
       <Route path='/resetpassword/:token' element={<ResetPassword />} />
+      <Route path='/noticeupload' element={!authUser?.auth_level >1 ?<Navigate to='/login' />:<NoticeUpload />} />
       <Route path='*' element={<Page404 />} />
       </Routes>
       <Toaster />
