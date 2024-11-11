@@ -12,7 +12,7 @@ router.get('/notice' , protectRoute , getNotices);
 router.get('/unregstudents/:hostel',authLevel2,getUnRegStudents)
 
 
-router.post('/changemenu' , authLevel2 , changeMenu);
+router.post('/updatemenu' , authLevel2 , changeMenu);
 
 
 

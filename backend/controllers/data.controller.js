@@ -56,7 +56,12 @@ export const getNotices = async (req, res) => {
   let { hostel } = req.query;
   try {
     const notices = await pool.query("SELECT * FROM noticeboard WHERE hostel_name = $1 ORDER BY timestamp DESC LIMIT 5", [hostel]);
+    if(notices.rowCount===0){
+      console.log("here")
+      return res.status(301).json({messsage:"no notice found"})
+    }
     res.status(200).json(notices.rows);
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Failed to fetch notices" });
@@ -96,23 +101,31 @@ export const getUnRegStudents = async (req, res) => {
 };
 
 
+
 export const changeMenu = async (req, res) => {
   const { day, hostel, breakfast, lunch, snacks, dinner } = req.body;
   try {
+    // Capitalize the first letter of the day to match database values
+    const formattedDay = day.charAt(0).toUpperCase() + day.slice(1);
 
-    let result = await pool.query(`
-    UPDATE menu ( breakfast, lunch, snacks, dinner)
-    SET breakfast = $3, lunch = $4, snacks = $5, dinner = $6 where hostel_name = $1 and day = $2
-`, [hostel, day.charAt(0).toUpperCase(), breakfast, lunch, snacks, dinner]);
+    const result = await pool.query(
+      `
+      UPDATE menu
+      SET breakfast = $3, lunch = $4, snacks = $5, dinner = $6
+      WHERE hostel_name = $1 AND day = $2
+      `,
+      [hostel, formattedDay, breakfast, lunch, snacks, dinner]
+    );
+
     if (result.rowCount === 0) {
-      console.log('error in modifying data in data controller');
-      return res.status(301).json({ error: "error modifying" });
+      console.error('Error in modifying data in changeMenu controller');
+      return res.status(404).json({ error: "No record found to update" });
     }
-    return res.status(201).json({ message: "ok" })
+
+    return res.status(200).json({ message: "Menu updated successfully" });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: " internal server error Failed to update menu" });
+    console.error("Error updating menu:", error);
+    return res.status(500).json({ message: "Internal server error: Failed to update menu" });
   }
+};
 
-
-}
