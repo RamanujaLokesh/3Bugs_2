@@ -2,11 +2,8 @@ import React, { useState, useEffect } from "react";
 import MessCard from "../components/MessCard";
 import SelectHostel from "../components/SelectHostel";
 import { useAuthContext } from "../context/AuthContext";
-import SelectHostel from "../components/SelectHostel";
-import { useAuthContext } from "../context/AuthContext";
 
 const MessMenu = () => {
-  const { authUser } = useAuthContext();
   const { authUser } = useAuthContext();
   const [mealData, setMealData] = useState([]);
   const [selectedHostel, setSelectedHostel] = useState(authUser.hostel);
@@ -17,7 +14,6 @@ const MessMenu = () => {
 
 
   useEffect(() => {
-    if (selectedHostel !== "All") {
     if (selectedHostel !== "All") {
       const fetchMess = async () => {
         try {
@@ -32,7 +28,7 @@ const MessMenu = () => {
       fetchMess();
     }
   }, [selectedHostel]);
-  }, [selectedHostel]);
+ 
 
   const handleHostelChange = (hostel) => {
     setSelectedHostel(hostel);
@@ -77,18 +73,28 @@ const MessMenu = () => {
     });
   };
 
-  if (!mealData.length || selectedHostel === "All") {
-    return (
-      <div className="flex justify-center items-center h-screen">
+  if (!mealData.length ) {
+if(selectedHostel==='All'){
+
+  return (
+    <div className=" h-screen">
         <div>
           <h1 className="flex items-center justify-center text-3xl text-gray-900 font-bold pt-4 pb-4">
             Mess Menu
           </h1>
         </div>
         <SelectHostel onSelectHostel={handleHostelChange} />
-        <div className="text-lg font-semibold">Loading...</div>
       </div>
     );
+  }else{
+    return(
+      < div className="h-screen flex items-center justify-center">
+        
+          <h1 className="font-extrabold">No menu found</h1>
+      
+      </div>
+    )
+  }
   }
 
   return (
@@ -100,20 +106,29 @@ const MessMenu = () => {
 
       {/* Select Hostel Dropdown */}
       {authUser.auth_level === 3 && (
+        <div className="my-4">
         <SelectHostel onSelectHostel={handleHostelChange} />
+        </div>
       )}
+
+      <div className="container mx-auto p-4">
+        {(!mealData.length || selectedHostel === "All")?(
+          <div className="flex flex-col items-center justify-center py-10">
+            <p className="text-lg font-semibold text-gray-700">Loading...</p>
+            </div>
+        ):(
 
       <div className="overflow-x-auto">
         <table className="table-auto w-full">
           <thead>
             <tr>
-              <th className="p-2 text-gray-800 text-left">Day</th>
+              <th className="p-2 bg-white text-gray-800 text-left">Day</th>
               {mealDay.map((meal, index) => (
-                <th key={index} className="p-2 text-left text-gray-700">
+                <th key={index} className="p-2 text-middle bg-white text-gray-700">
                   {meal}
                 </th>
               ))}
-              {authUser.auth_level > 1 && <th className="p-2 text-left text-gray-700">Edit</th>}
+              {authUser.auth_level > 1 && <th className="p-2 bg-white  text-left text-gray-700">Edit</th>}
             </tr>
           </thead>
           <tbody>
@@ -165,6 +180,8 @@ const MessMenu = () => {
           </tbody>
         </table>
       </div>
+        )}
+    </div>
     </div>
   );
 };

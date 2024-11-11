@@ -32,7 +32,7 @@ const SendMessage = ({ addMessage }) => {
         // Call addMessage to update the messages in ConferenceRoom
         addMessage(acknowledgment.message);
         setValue('');
-        toast.success('Message sent successfully!');
+        // toast.success('Message sent successfully!');
       } else {
         toast.error('Failed to send message.');
       }

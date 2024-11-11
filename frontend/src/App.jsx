@@ -27,7 +27,7 @@ function App() {
   return (
     
     <div className="bg-gray-200">
-      <Navbar />
+       {authUser&&<Navbar />}
 
       <Routes>
         <Route
@@ -65,7 +65,7 @@ function App() {
         />
         <Route
           path="/unregstudents"
-          element={authUser?.auth_level > 1 ? <UnRegStudents /> : <Page404 />}
+          element={authUser?.auth_level > 1 ? <UnRegStudents /> : <Login />}
         />
 
         <Route
@@ -101,7 +101,7 @@ function App() {
         <Route path="*" element={<Page404 />} />
       </Routes>
 
-      <Footer />
+      {authUser&&<Footer />}
 
       <Toaster />
     </div>

@@ -29,9 +29,9 @@ const Message = ({ message , onDelete }) => {
   return (
     <div className={"chat " + (isSender ? "chat-end" : "chat-start")}>
       <div className="chat-header">
-        {reg_no} {isSender&&<span className='pl-1 hover:text-red-900' onClick={handleDelete}>delete</span>}
+        <span className='text-gray-600'>{reg_no}</span> {isSender&&<span className='pl-1 hover:text-red-900' onClick={handleDelete}>delete</span>}
       </div>
-      <div className="chat-bubble">{message.text}</div>
+      <div className="chat-bubble text-white">{message.text}</div>
         <time className="text-xs opacity-50">{new Date(message.timestamp).toLocaleTimeString()}</time>
     </div>
   );

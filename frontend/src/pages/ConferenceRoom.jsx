@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { socket } from "../socket";
 import Message from "../components/message/Message";
 import SendMessage from "../components/message/SendMessage";
@@ -12,6 +12,14 @@ const ConferenceRoom = () => {
   const { loading, getMessages } = useGetMessages();
   const { authUser } = useAuthContext();
   const [hostel, setHostel] = useState(authUser.hostel);
+  
+  const messagesEndRef = useRef(null); 
+  
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]); 
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -36,11 +44,12 @@ const ConferenceRoom = () => {
 
       const onConnect = () => {
         setIsConnected(true);
-        socket.emit("joinHostel", hostel);
+        socket.emit("joinHostel", hostel);  // Emit only when socket connects
       };
       const onDisconnect = () => setIsConnected(false);
       const onReceiveMessage = (message) => {
         setMessages((prevMessages) => {
+          // Ensure no duplicates and sort messages
           const messageExists = prevMessages.some(
             (msg) => msg.unique_id === message.unique_id
           );
@@ -83,7 +92,7 @@ const ConferenceRoom = () => {
 
   const onSelectHostel = (hostelValue) => {
     setHostel(hostelValue);
-    setMessages([]); // Clear messages when changing hostels
+    setMessages([]); 
   };
 
   const addMessage = (newMessage) => {
@@ -98,11 +107,12 @@ const ConferenceRoom = () => {
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       {hostel === "All" ? (
-        <div className="flex items-center justify-center h-full">
+        <div className="h-full">
           <SelectHostel onSelectHostel={onSelectHostel} />
         </div>
       ) : (
         <>
+        {authUser.auth_level===3&&<SelectHostel onSelectHostel={onSelectHostel}/>}
           <div className="flex flex-col flex-grow overflow-hidden">
             <div className="flex-grow overflow-y-auto p-4">
               {loading ? (
@@ -122,6 +132,8 @@ const ConferenceRoom = () => {
                   No messages found.
                 </div>
               )}
+
+              <div ref={messagesEndRef} />
             </div>
           </div>
           {isConnected ? (

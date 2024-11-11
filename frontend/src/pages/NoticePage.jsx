@@ -17,8 +17,11 @@ function NoticePage() {
     <div className="flex flex-col min-h-screen bg-gray-50">
       
       
-{authUser.hostel==='All'&&<SelectHostel onSelectHostel={onSelectHostel} />}
-     
+{authUser.auth_level===3&&<SelectHostel onSelectHostel={onSelectHostel} />}
+{authUser.auth_level>1&&<Link to='/noticeupload' > <button
+              type="submit"
+              className="py-2 px-4 bg-blue-500 text-white font-semibold rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >Upload Notice</button></Link>}
       <main className="flex-grow">
         <div className="container mx-auto p-6">
          {
@@ -28,7 +31,7 @@ selectedHostel !=='All'
         </div>
       </main>
 
-{authUser.auth_level>1&&<Link to='/noticeupload' className='btn w-full '>Upload Notice</Link>}
+
       
       
     </div>

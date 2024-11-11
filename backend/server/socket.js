@@ -1,5 +1,3 @@
-// socket.js
-
 import pool from '../dbConfig.js';
 import { Server } from 'socket.io';
 

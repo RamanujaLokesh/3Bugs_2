@@ -5,14 +5,12 @@ const NoticeBoard = ({ hostel }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchNotices();
-  }, [hostel]);
+  
 
   const fetchNotices = async () => {
     try {
-      const response = await fetch(`/api/data/notice?hostel=${hostel}`);
-      if (!response.ok) throw new Error("Failed to fetch notices");
+      let response = await fetch(`/api/data/notice?hostel=${hostel}`);
+  
 
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
@@ -110,7 +108,8 @@ const NoticeBoard = ({ hostel }) => {
               </div>
             );
           })
-        ) : (
+        )
+         : (
           <p className="text-center text-gray-600">
             No notices available at the moment.
           </p>

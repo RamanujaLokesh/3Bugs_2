@@ -32,3 +32,22 @@ export const getComplaints = async (req, res) => {
     }
 };
 
+export const getAllComplaints = async(req,res) => {
+    try{
+        const result = await pool.query(`
+            SELECT * FROM stored_complaints
+            WHERE hostel_name = $1
+            ORDER BY time DESC;
+            `,[req.params.hostel] );
+            // if(result.rowCount===0){
+            //     return res.status(400).json({message:"no complaints found!"})
+            // }
+            res.status(200).json(result.rows);  
+    } catch (err) {
+        console.error('Error fetching complaints:', err);
+        res.status(500).json({ error: 'Error fetching complaints', message: err.message });
+    }
+ };
+
+
+
