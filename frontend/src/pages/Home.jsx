@@ -4,9 +4,9 @@ import Footer from '../components/footer.jsx';
 
 function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gray-200">
     
-      <main className="flex-grow items-center justify-center  bg-white transition-all">
+      <main className="flex-grow items-center justify-center ">
         <Mealplan />
       </main>
       

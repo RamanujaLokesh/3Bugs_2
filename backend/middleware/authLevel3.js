@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-const authLevel3 = () => {
+const authLevel3 = (req,res,next) => {
     try {
 
 

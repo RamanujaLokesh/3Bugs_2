@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { socket } from "../socket";
 import Message from "../components/message/Message";
 import SendMessage from "../components/message/SendMessage";
-import useGetMessages from "../hooks/useGetMessages.js";
-import { useAuthContext } from "../context/AuthContext.jsx";
-import SelectHostel from "../components/SelectHostel.jsx";
+import useGetMessages from "../hooks/useGetMessages";
+import { useAuthContext } from "../context/AuthContext";
+import SelectHostel from "../components/SelectHostel";
 
 const ConferenceRoom = () => {
   const [isConnected, setIsConnected] = useState(false);
@@ -13,14 +13,14 @@ const ConferenceRoom = () => {
   const { authUser } = useAuthContext();
   const [hostel, setHostel] = useState(authUser.hostel);
 
-  // Fetch messages once on component mount
   useEffect(() => {
     const fetchMessages = async () => {
-      if (hostel !== 'All') {
+      if (hostel !== "All") {
         const data = await getMessages(hostel);
         if (Array.isArray(data)) {
-          // Sort messages by timestamp ascending
-          const sortedMessages = data.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+          const sortedMessages = data.sort(
+            (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+          );
           setMessages(sortedMessages);
         } else {
           console.error("Data fetched is not an array", data);
@@ -30,24 +30,24 @@ const ConferenceRoom = () => {
     fetchMessages();
   }, [hostel]);
 
-  // Set up socket connections and event listeners
   useEffect(() => {
-    if (hostel !== 'All') {
+    if (hostel !== "All") {
       setIsConnected(socket.connected);
 
       const onConnect = () => {
         setIsConnected(true);
-        socket.emit('joinHostel', hostel);
+        socket.emit("joinHostel", hostel);
       };
-      const onDisconnect = () => {
-        setIsConnected(false);
-      };
+      const onDisconnect = () => setIsConnected(false);
       const onReceiveMessage = (message) => {
         setMessages((prevMessages) => {
-          const messageExists = prevMessages.some((msg) => msg.unique_id === message.unique_id);
+          const messageExists = prevMessages.some(
+            (msg) => msg.unique_id === message.unique_id
+          );
           if (!messageExists) {
-            // Sort messages by timestamp ascending after adding a new message
-            const updatedMessages = [...prevMessages, message].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+            const updatedMessages = [...prevMessages, message].sort(
+              (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+            );
             return updatedMessages;
           }
           return prevMessages;
@@ -58,7 +58,6 @@ const ConferenceRoom = () => {
       socket.on("disconnect", onDisconnect);
       socket.on("receiveMessage", onReceiveMessage);
 
-      // Clean up socket connections on unmount
       return () => {
         socket.off("connect", onConnect);
         socket.off("disconnect", onDisconnect);
@@ -73,14 +72,16 @@ const ConferenceRoom = () => {
       return;
     }
     try {
-      socket.emit('deleteMessage', id, hostel);
-      setMessages((prevMessages) => prevMessages.filter((msg) => msg.unique_id !== id));
+      socket.emit("deleteMessage", id, hostel);
+      setMessages((prevMessages) =>
+        prevMessages.filter((msg) => msg.unique_id !== id)
+      );
     } catch (error) {
-      console.error('Error deleting message:', error);
+      console.error("Error deleting message:", error);
     }
   };
 
-  function onSelectHostel(hostelValue) {
+  const onSelectHostel = (hostelValue) => {
     setHostel(hostelValue);
     setMessages([]); // Clear messages when changing hostels
   };
@@ -88,31 +89,51 @@ const ConferenceRoom = () => {
   const addMessage = (newMessage) => {
     setMessages((prevMessages) => {
       const updatedMessages = [...prevMessages, newMessage];
-      return updatedMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      return updatedMessages.sort(
+        (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+      );
     });
   };
 
   return (
-    <div className="flex flex-col items-center">
-      {hostel === 'All' ? (
-        <SelectHostel onSelectHostel={onSelectHostel} />
-      ) : (
-        <div className="flex flex-col justify-center flex-wrap gap-2 w-4/5">
-          {loading ? (
-            <span className="loading loading-spinner"></span>
-          ) : messages.length > 0 ? (
-            messages.map((message) => (
-              <Message key={message.unique_id} message={message} onDelete={handleDeleteMessage} />
-            ))
-          ) : (
-            <p>No messages found.</p>
-          )}
-          {isConnected ? (
-            <SendMessage addMessage={addMessage} />
-          ) : (
-            <div>Connection error</div>
-          )}
+    <div className="flex flex-col h-screen bg-gray-100">
+      {hostel === "All" ? (
+        <div className="flex items-center justify-center h-full">
+          <SelectHostel onSelectHostel={onSelectHostel} />
         </div>
+      ) : (
+        <>
+          <div className="flex flex-col flex-grow overflow-hidden">
+            <div className="flex-grow overflow-y-auto p-4">
+              {loading ? (
+                <div className="flex justify-center items-center h-full">
+                  <span className="loading loading-spinner"></span>
+                </div>
+              ) : messages.length > 0 ? (
+                messages.map((message) => (
+                  <Message
+                    key={message.unique_id}
+                    message={message}
+                    onDelete={handleDeleteMessage}
+                  />
+                ))
+              ) : (
+                <div className="text-center text-gray-500">
+                  No messages found.
+                </div>
+              )}
+            </div>
+          </div>
+          {isConnected ? (
+            <div className="bg-white shadow-md p-4 sticky bottom-0">
+              <SendMessage addMessage={addMessage} />
+            </div>
+          ) : (
+            <div className="text-center text-red-500 p-4">
+              Connection error. Please try again.
+            </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -25,7 +25,8 @@ function App() {
   const { authUser } = useAuthContext();
 
   return (
-    <div>
+    
+    <div className="bg-gray-200">
       <Navbar />
 
       <Routes>
@@ -88,7 +89,7 @@ function App() {
           }
         />
         <Route
-          path="/uploadnotice"
+          path="/noticeupload"
           element={
             !authUser?.auth_level > 1 ? (
               <Navigate to="/login" />

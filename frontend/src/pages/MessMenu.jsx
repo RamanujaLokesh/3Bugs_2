@@ -1,98 +1,89 @@
 import React, { useState, useEffect } from "react";
 import MessCard from "../components/MessCard";
-import SelectHostel from "../components/SelectHostel"; // Import SelectHostel component
-import { useAuthContext } from "../context/AuthContext"; // Import AuthContext to access user info
+import SelectHostel from "../components/SelectHostel";
+import { useAuthContext } from "../context/AuthContext";
 
 const MessMenu = () => {
-  const { authUser } = useAuthContext(); // Access authUser context
+  const { authUser } = useAuthContext();
   const [mealData, setMealData] = useState([]);
   const [selectedHostel, setSelectedHostel] = useState(authUser.hostel);
-  
   const mealDay = ["Breakfast", "Lunch", "Snacks", "Dinner"];
-  useEffect(() => {
-    if(selectedHostel!=='All'){
 
+  useEffect(() => {
+    if (selectedHostel !== "All") {
       const fetchMess = async () => {
         try {
-          const fetchdata = await fetch( `/api/data/getmenu?hostel=${selectedHostel}`);
-          const res = await fetchdata.json();
-          console.log(res);
-          setMealData(res);
+          const response = await fetch(`/api/data/getmenu?hostel=${selectedHostel}`);
+          const data = await response.json();
+          setMealData(data);
         } catch (err) {
-          console.log("Error while fetching menu", err);
+          console.error("Error while fetching menu", err);
         }
       };
-      
+
       fetchMess();
     }
-  }, [selectedHostel]); // Fetch new data when the selected hostel changes
+  }, [selectedHostel]);
 
-  // Function to handle hostel selection
   const handleHostelChange = (hostel) => {
     setSelectedHostel(hostel);
   };
 
-  if (!mealData.length || selectedHostel ==='All') {
-    return (
-      <div className="flex justify-center items-center h-screen">
-           <div>
-        <h1 className="flex items-center justify-center text-3xl text-gray-900 font-bold pt-4 pb-4">
-          Mess Menu
-        </h1>
-      </div>
-      <SelectHostel onSelectHostel={handleHostelChange} />
-        <div className="text-lg font-semibold">Loading...</div>
-      </div>
-    );
-  }
-
   return (
-    <div className="h-full">
-      <div>
-        <h1 className="flex items-center justify-center text-3xl text-gray-900 font-bold pt-4 pb-4">
-          Mess Menu
-        </h1>
+    <div className="min-h-screen">
+      {/* Header */}
+      <div className=" text-black py-4">
+        <h1 className="text-3xl font-bold text-center">Mess Menu</h1>
       </div>
 
+      {/* Select Hostel Dropdown */}
       {authUser.auth_level === 3 && (
-         <SelectHostel onSelectHostel={handleHostelChange} />// Render the SelectHostel dropdown if auth_level is 3
+        <div className="my-4">
+          <SelectHostel onSelectHostel={handleHostelChange} />
+        </div>
       )}
 
-      <div className="overflow-x-auto">
-        <table className="table-auto w-full">
-          <thead>
-            <tr>
-              <th className="p-2 text-gray-800 text-left">Day</th>
-              {mealDay.map((meal, index) => (
-                <th key={index} className="p-2 text-left text-gray-700">
-                  {meal}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {mealData.map((dayMeals, dayIndex) => (
-              <tr
-                key={dayIndex}
-                className={`${dayIndex % 2 === 0 ? "bg-gray-100" : "bg-white"}`}
-              >
-                <td className="p-2 text-gray-700">{dayMeals.day}</td>
-                <td className="p-2 text-center">
-                  <MessCard presentMeal={dayMeals.breakfast} />
-                </td>
-                <td className="p-2 text-center">
-                  <MessCard presentMeal={dayMeals.lunch} />
-                </td>
-                <td className="p-2 text-center">
-                  <MessCard presentMeal={dayMeals.snacks} />
-                </td>
-                <td className="p-2 text-center">
-                  <MessCard presentMeal={dayMeals.dinner} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Mess Menu Table */}
+      <div className="container mx-auto p-4">
+        {(!mealData.length || selectedHostel === "All") ? (
+          <div className="flex flex-col items-center justify-center py-10">
+            <p className="text-lg font-semibold text-gray-700">Loading...</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+            <table className="table-auto w-full border-collapse">
+              <thead>
+                <tr className="bg-white">
+                  <th className="p-4 text-left font-medium text-gray-800">Day</th>
+                  {mealDay.map((meal, index) => (
+                    <th key={index} className="p-4 text-left font-medium text-gray-800">
+                      {meal}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {mealData.map((dayMeals, dayIndex) => (
+                  <tr key={dayIndex} className={`${dayIndex % 2 === 0 ? "bg-slate-200" : "bg-white"}`}>
+                    <td className="p-4 font-medium text-gray-700">{dayMeals.day}</td>
+                    <td className="p-4 text-center">
+                      <MessCard presentMeal={dayMeals.breakfast} />
+                    </td>
+                    <td className="p-4 text-center">
+                      <MessCard presentMeal={dayMeals.lunch} />
+                    </td>
+                    <td className="p-4 text-center">
+                      <MessCard presentMeal={dayMeals.snacks} />
+                    </td>
+                    <td className="p-4 text-center">
+                      <MessCard presentMeal={dayMeals.dinner} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

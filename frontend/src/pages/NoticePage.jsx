@@ -28,7 +28,7 @@ selectedHostel !=='All'
         </div>
       </main>
 
-{authUser.auth_level>1&&<Link to='/uploadnotice' className='btn w-full '>Upload Notice</Link>}
+{authUser.auth_level>1&&<Link to='/noticeupload' className='btn w-full '>Upload Notice</Link>}
       
       
     </div>

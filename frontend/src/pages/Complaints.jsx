@@ -4,7 +4,7 @@ import Navbar from '../components/navbar'
 
 const Complaints = () => {
   return (
-    <div>
+    <div className='h-full'>
        
         Complaints
       
