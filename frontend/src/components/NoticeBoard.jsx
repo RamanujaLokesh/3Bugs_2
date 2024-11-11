@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
+// NoticeBoard.js
+import React, { useEffect, useState } from "react";
 
-const NoticeBoard = ({hostel}) => {
+const NoticeBoard = ({ hostel }) => {
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  useEffect(() => {
+    fetchNotices();
+  }, [hostel]);
+
   const fetchNotices = async () => {
     try {
-      const response = await fetch(`/api/data/notice?hostel=${hostel}`);
-      if (!response.ok) throw new Error('Failed to fetch notices');
-
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-        const data = await response.json();
-        setNotices(data);
-      } else {
-        throw new Error("Invalid response format");
-      }
+      let response = await fetch(`/api/data/notice?hostel=${hostel}`);
+      if (!response.ok) throw new Error("Failed to fetch notices");
+      
+      response = await response.json();
+      setNotices(response); // Save fetched notices to the state
     } catch (error) {
       setError(error.message);
     } finally {
@@ -24,27 +24,10 @@ const NoticeBoard = ({hostel}) => {
     }
   };
 
-  useEffect(() => {
-    fetchNotices();
-  }, [hostel]);
-
-  const handleDownload = (pdfUrl, filename) => {
-    fetch(pdfUrl)
-      .then((response) => response.blob())
-      .then((blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', filename); 
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      })
-      .catch((error) => {
-        console.error('Error downloading file:', error);
-      });
+  const handleDownload = (filename) => {
+    const downloadUrl = `/api/notice/download/${filename}`;
+    window.open(downloadUrl, "_blank"); // Opens the PDF in a new tab
   };
-  
 
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
   if (error) return <p className="text-center text-red-500">Failed to load notices: {error}</p>;
@@ -57,7 +40,7 @@ const NoticeBoard = ({hostel}) => {
           notices.map((notice) => {
             const noticeDate = new Date(notice.timestamp);
             const formattedDate = noticeDate.toLocaleDateString();
-            const formattedTime = noticeDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const formattedTime = noticeDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
             return (
               <div
@@ -72,10 +55,10 @@ const NoticeBoard = ({hostel}) => {
                   <h2 className="text-lg font-medium text-gray-900">{notice.title}</h2>
                 </div>
                 <button
-                  onClick={() => handleDownload(notice.pdf_document, notice.title + '.pdf')}
+                  onClick={() => notice.pdf_document && handleDownload(notice.pdf_document)}
                   className="mt-2 sm:mt-0 text-blue-600 hover:text-blue-800 hover:underline text-sm font-semibold"
                 >
-                  Download PDF
+                  {notice.pdf_document ? "Open PDF" : "No PDF Available"}
                 </button>
               </div>
             );
