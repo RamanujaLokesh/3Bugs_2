@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import MessCard from "../components/MessCard";
 import SelectHostel from "../components/SelectHostel";
 import { useAuthContext } from "../context/AuthContext";
+import SelectHostel from "../components/SelectHostel";
+import { useAuthContext } from "../context/AuthContext";
 
 const MessMenu = () => {
+  const { authUser } = useAuthContext();
   const { authUser } = useAuthContext();
   const [mealData, setMealData] = useState([]);
   const [selectedHostel, setSelectedHostel] = useState(authUser.hostel);
@@ -12,7 +15,9 @@ const MessMenu = () => {
 
   const mealDay = ["Breakfast", "Lunch", "Snacks", "Dinner"];
 
+
   useEffect(() => {
+    if (selectedHostel !== "All") {
     if (selectedHostel !== "All") {
       const fetchMess = async () => {
         try {
@@ -21,11 +26,12 @@ const MessMenu = () => {
           console.log(res);
           setMealData(res);
         } catch (err) {
-          console.log("Error while fetching menu", err);
+          console.error("Error while fetching menu", err);
         }
       };
       fetchMess();
     }
+  }, [selectedHostel]);
   }, [selectedHostel]);
 
   const handleHostelChange = (hostel) => {
@@ -86,13 +92,13 @@ const MessMenu = () => {
   }
 
   return (
-    <div className="h-full">
-      <div>
-        <h1 className="flex items-center justify-center text-3xl text-gray-900 font-bold pt-4 pb-4">
-          Mess Menu
-        </h1>
+    <div className="min-h-screen">
+      {/* Header */}
+      <div className=" text-black py-4">
+        <h1 className="text-3xl font-bold text-center">Mess Menu</h1>
       </div>
 
+      {/* Select Hostel Dropdown */}
       {authUser.auth_level === 3 && (
         <SelectHostel onSelectHostel={handleHostelChange} />
       )}
