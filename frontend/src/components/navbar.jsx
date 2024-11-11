@@ -30,9 +30,7 @@ const Navbar = () => {
           {authUser.auth_level ===1 &&
           <Link to='/complaint' >Complaint</Link>
           }
-           {authUser.auth_level >1 &&
-          <Link to='/complaints' >Complaints</Link>
-          }
+        
         </div>
 
         <div className="relative">
@@ -97,9 +95,7 @@ const Navbar = () => {
            {authUser.auth_level ===1 &&
           <Link to='/complaint' >Complaint</Link>
           }
-           {authUser.auth_level >1 &&
-          <Link to='/complaints' >Complaints</Link>
-          }
+           
           </div>
         </div>
       )}

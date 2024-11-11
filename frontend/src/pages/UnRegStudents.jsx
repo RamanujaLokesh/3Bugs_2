@@ -3,76 +3,52 @@ import useUnRegStudents from '../hooks/useUnRegStudents';
 import { useAuthContext } from '../context/AuthContext';
 import UnregCard from '../components/UnregCard';
 import SelectHostel from '../components/SelectHostel';
-import Navbar from '../components/navbar';
-import Footer from '../components/footer';
 
 const UnRegStudents = () => {
+  const { authUser } = useAuthContext();
   const { loading, unRegStudents } = useUnRegStudents();
   const [data, setData] = useState([]);
-  const [selectedHostel, setSelectedHostel] = useState('');
-  const { authUser } = useAuthContext();
+  const [selectedHostel, setSelectedHostel] = useState(authUser.hostel);
   const [nb, setNb] = useState(0);
   const [nl, setNl] = useState(0);
   const [ns, setNs] = useState(0);
   const [nd, setNd] = useState(0);
 
+  const fetchData = async (hostel) => {
+    const students = await unRegStudents(hostel);
+    console.log(students); // Log data directly after fetching
+    setData(students);
+
+    let breakfastCount = 0;
+    let lunchCount = 0;
+    let snacksCount = 0;
+    let dinnerCount = 0;
+if(!students.error){
+  students?.forEach(student => {
+    if (student.breakfast === false) breakfastCount++;
+    if (student.lunch === false) lunchCount++;
+    if (student.snacks === false) snacksCount++;
+    if (student.dinner === false) dinnerCount++;
+  });
+}
+
+    setNb(breakfastCount);
+    setNl(lunchCount);
+    setNs(snacksCount);
+    setNd(dinnerCount);
+  };
+
   useEffect(() => {
-    if (authUser.auth_level === 1) {
-      const fetchData = async () => {
-        const students = await unRegStudents(authUser.hostel);
-        console.log(students); // Log data directly after fetching
-        setData(students);
-
-        let breakfastCount = 0; 
-        let lunchCount = 0;
-        let snacksCount = 0;
-        let dinnerCount = 0;
-
-        students?.forEach(student => {
-          if (student.breakfast === false) breakfastCount++;
-          if (student.lunch === false) lunchCount++;
-          if (student.snacks === false) snacksCount++;
-          if (student.dinner === false) dinnerCount++;
-        });
-
-        setNb(breakfastCount);
-        setNl(lunchCount);
-        setNs(snacksCount);
-        setNd(dinnerCount);
-      };
-
-      fetchData();
+    if (authUser.auth_level < 3) {
+      fetchData(authUser.hostel);
     }
   }, [authUser]);
 
   useEffect(() => {
     if (authUser.auth_level === 3 && selectedHostel) {
-      const fetchData = async () => {
-        const students = await unRegStudents(selectedHostel);
-        console.log(students); // Log data directly after fetching
-        setData(students);
-
-        let breakfastCount = 0;
-        let lunchCount = 0;
-        let snacksCount = 0;
-        let dinnerCount = 0;
-
-        students?.forEach(student => {
-          if (student.breakfast === false) breakfastCount++;
-          if (student.lunch === false) lunchCount++;
-          if (student.snacks === false) snacksCount++;
-          if (student.dinner === false) dinnerCount++;
-        });
-
-        setNb(breakfastCount);
-        setNl(lunchCount);
-        setNs(snacksCount);
-        setNd(dinnerCount);
-      };
-
-      fetchData();
+      fetchData(selectedHostel);
     }
-  }, [selectedHostel, authUser.auth_level]);
+  }, [selectedHostel, authUser.auth_level]);  // Make sure to update counts when selectedHostel changes
 
   const handleHostelChange = (hostel) => {
     setSelectedHostel(hostel);
@@ -80,9 +56,8 @@ const UnRegStudents = () => {
 
   return (
     <div>
-      
       {authUser.auth_level === 3 && (
-        <SelectHostel onSelectHostel={handleHostelChange}/>
+        <SelectHostel onSelectHostel={handleHostelChange} />
       )}
 
       {loading ? (
@@ -103,7 +78,6 @@ const UnRegStudents = () => {
           )}
         </div>
       )}
-      
     </div>
   );
 };

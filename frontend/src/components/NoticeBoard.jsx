@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
-const NoticeBoard = () => {
+const NoticeBoard = ({hostel}) => {
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const fetchNotices = async () => {
     try {
-      const response = await fetch('/api/data/notice');
+      const response = await fetch(`/api/data/notice?hostel=${hostel}`);
       if (!response.ok) throw new Error('Failed to fetch notices');
 
       const contentType = response.headers.get("content-type");
@@ -26,7 +26,7 @@ const NoticeBoard = () => {
 
   useEffect(() => {
     fetchNotices();
-  }, []);
+  }, [hostel]);
 
   const handleDownload = (pdfUrl, filename) => {
     fetch(pdfUrl)
